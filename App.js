@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, StyleSheet, StatusBar } from "react-native";
+import React, { useState } from "react";
+import Home from "./screens/Home";
+import AddNote from "./screens/AddNote";
+import EditNote from "./screens/EditNote";
+
+const CurrentPageWidget = ({ currentPage, noteList, setCurrentPage, addNote }) => {
+  switch (currentPage) {
+    case "home":
+      return <Home notelist={noteList} setCurrentPage={setCurrentPage} />;
+    case "add":
+      return <AddNote setCurrentPage={setCurrentPage} addNote={addNote} />;
+    case "edit":
+      return <EditNote />;
+    default:
+      return <Home />;
+  }
+};
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [currentPage, setCurrentPage] = useState("home");
+  const [noteList, setNoteList] = useState([
+    {
+      id: 1,
+      title: "Note Pertama",
+      desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
+    },
+  ]);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const addNote = (title, desc) => {
+    const id = noteList.length > 0 ? noteList[noteList.length - 1].id + 1 : 1;
+
+    setNoteList([
+      ...noteList,
+      {
+        id,
+        title: title,
+        desc: desc,
+      },
+    ]);
+  };
+
+  return <CurrentPageWidget currentPage={currentPage} noteList={noteList} setCurrentPage={setCurrentPage} addNote={addNote} />;
+}
